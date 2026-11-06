@@ -1,0 +1,16 @@
+{
+  "name": "ShrimpHub OS",
+  "short_name": "ShrimpHub",
+  "description": "Personal Life & Work Operating System",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07090e",
+  "theme_color": "#07090e",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
