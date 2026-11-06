@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "ShrimpHub — Personal Life & Work OS",
   description: "All-in-one personal operating hub for finance, timebox, reading, notes and snippets.",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦐</text></svg>",
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><circle cx='12' cy='12' r='10' fill='%23ec4899' fill-opacity='0.2'/><path d='M7 14.5C8 17 11 18.5 14 18M17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12' stroke='%23ec4899' stroke-width='2' stroke-linecap='round'/><circle cx='10' cy='11' r='1.25' fill='%23f43f5e'/></svg>",
   },
 };
 

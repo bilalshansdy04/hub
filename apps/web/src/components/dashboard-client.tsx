@@ -17,9 +17,14 @@ import {
   Plus,
   Sparkles,
   ArrowUpRight,
+  ArrowDownLeft,
   ExternalLink,
   Calendar,
   TrendingUp,
+  Save,
+  Check,
+  CreditCard,
+  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -44,16 +49,13 @@ export function DashboardClient({
 }: DashboardClientProps) {
   const [isPending, startTransition] = useTransition();
 
-  // Modals state
-  const [expenseModalOpen, setExpenseModalOpen] = useState(false);
-  const [noteModalOpen, setNoteModalOpen] = useState(false);
-
   // Quick expense input & live parser preview
   const [expenseInput, setExpenseInput] = useState("");
   const parsedPreview = parseQuickTransaction(expenseInput);
 
   // Scratchpad note state
   const [noteContent, setNoteContent] = useState(pinnedNote?.content || "");
+  const [isSavingNote, setIsSavingNote] = useState(false);
 
   // Task input state
   const [newTaskInput, setNewTaskInput] = useState("");
@@ -62,16 +64,15 @@ export function DashboardClient({
   const handleQuickExpenseSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!expenseInput.trim() || parsedPreview.amount <= 0) {
-      toast.error("Format input belum ada nominal. Cth: 'kopi 25k #jajan'");
+      toast.error("Format nominal belum valid. Contoh: 'kopi 25rb' atau 'gaji 5jt'");
       return;
     }
 
     startTransition(async () => {
       const res = await addQuickTransactionAction(expenseInput);
       if (res.success) {
-        toast.success(`Tersimpan: ${formatIDR(res.parsed?.amount || 0)} (${res.parsed?.note})`);
+        toast.success(`Tercatat: ${formatIDR(res.parsed?.amount || 0)} (${res.parsed?.note})`);
         setExpenseInput("");
-        setExpenseModalOpen(false);
       } else {
         toast.error(res.error || "Gagal menyimpan transaksi");
       }
@@ -101,455 +102,445 @@ export function DashboardClient({
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTaskInput.trim()) return;
+
     startTransition(async () => {
-      await addTaskAction(newTaskInput);
-      setNewTaskInput("");
-      toast.success("Tugas ditambahkan");
+      const res = await addTaskAction(newTaskInput);
+      if (res.success) {
+        setNewTaskInput("");
+        toast.success("Tugas ditambahkan");
+      }
     });
   };
 
-  // Save scratchpad
-  const handleSaveNote = () => {
-    startTransition(async () => {
-      await saveNoteAction(noteContent, pinnedNote?.id);
-      toast.success("Scratchpad tersimpan");
-      setNoteModalOpen(false);
-    });
+  // Save note
+  const handleSaveNote = async () => {
+    setIsSavingNote(true);
+    try {
+      const res = await saveNoteAction(noteContent, pinnedNote?.id);
+      if (res.success) {
+        toast.success("Catatan berhasil disimpan");
+      } else {
+        toast.error("Gagal menyimpan");
+      }
+    } finally {
+      setIsSavingNote(false);
+    }
   };
+
+  const completedTasks = tasksList.filter((t) => t.isDone).length;
+  const pendingTasks = tasksList.filter((t) => !t.isDone);
 
   return (
-    <AppShell
-      user={user}
-      onQuickExpense={() => setExpenseModalOpen(true)}
-      onQuickNote={() => setNoteModalOpen(true)}
-    >
+    <AppShell user={user}>
       <div className="space-y-6">
-        {/* Quick Action Ribbon */}
-        <div className="flex items-center justify-between flex-wrap gap-3 p-4 rounded-2xl aurora-glass">
-          <div className="flex items-center gap-2 text-xs text-zinc-400">
-            <Sparkles className="w-4 h-4 text-pink-400" />
-            <span>Shortcut Cepat:</span>
-            <kbd className="px-1.5 py-0.5 dark:bg-white/10 light:bg-zinc-200 rounded text-[10px] font-mono dark:text-zinc-300 light:text-zinc-700">T</kbd>
-            <span>Catat Uang</span>
-            <span className="text-zinc-600">•</span>
-            <kbd className="px-1.5 py-0.5 dark:bg-white/10 light:bg-zinc-200 rounded text-[10px] font-mono dark:text-zinc-300 light:text-zinc-700">N</kbd>
-            <span>Scratchpad</span>
-            <span className="text-zinc-600">•</span>
-            <kbd className="px-1.5 py-0.5 dark:bg-white/10 light:bg-zinc-200 rounded text-[10px] font-mono dark:text-zinc-300 light:text-zinc-700">⌘K</kbd>
-            <span>Command Menu</span>
+        {/* Welcome Banner & KPI Metrics Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Card 1: Total Net Worth */}
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
+            <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+              <span className="flex items-center gap-1.5 font-medium">
+                <Wallet className="w-4 h-4 text-emerald-400" />
+                Total Kekayaan
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
+                Active
+              </span>
+            </div>
+            <div className="text-2xl font-bold font-mono tracking-tight text-white light:text-zinc-900">
+              {formatIDR(finance.totalBalance)}
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 pt-2 border-t dark:border-white/[0.06] light:border-zinc-200/60">
+              <span>{finance.wallets.length} Akun Dompet</span>
+              <Link
+                href="/finance"
+                className="text-emerald-400 hover:underline flex items-center gap-0.5 text-[10px] font-medium"
+              >
+                Detail <ArrowUpRight className="w-3 h-3" />
+              </Link>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setExpenseModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium shadow-md active:scale-95 transition-all cursor-pointer"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Catat Transaksi</span>
-            </button>
-            <button
-              onClick={() => setNoteModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/30 light:bg-sky-100 light:text-sky-700 border text-xs font-medium active:scale-95 transition-all cursor-pointer"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Catatan</span>
-            </button>
+          {/* Card 2: Tugas Hari Ini */}
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
+            <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+              <span className="flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-4 h-4 text-sky-400" />
+                Progres Tugas
+              </span>
+              <span className="text-[10px] font-mono text-sky-400">
+                {tasksList.length > 0
+                  ? `${Math.round((completedTasks / tasksList.length) * 100)}%`
+                  : "0%"}
+              </span>
+            </div>
+            <div className="text-2xl font-bold font-mono tracking-tight text-white light:text-zinc-900">
+              {completedTasks} / {tasksList.length}
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 pt-2 border-t dark:border-white/[0.06] light:border-zinc-200/60">
+              <span>{pendingTasks.length} Belum Selesai</span>
+              <Link
+                href="/notes"
+                className="text-sky-400 hover:underline flex items-center gap-0.5 text-[10px] font-medium"
+              >
+                Buka Tasks <ArrowUpRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 3: Reading Tracker */}
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
+            <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+              <span className="flex items-center gap-1.5 font-medium">
+                <BookOpen className="w-4 h-4 text-amber-400" />
+                Reading Catalog
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
+                Kenmei
+              </span>
+            </div>
+            <div className="text-2xl font-bold font-mono tracking-tight text-white light:text-zinc-900">
+              {comicsList.length} Judul
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 pt-2 border-t dark:border-white/[0.06] light:border-zinc-200/60">
+              <span>One-Click +1 Ch</span>
+              <Link
+                href="/comics"
+                className="text-amber-400 hover:underline flex items-center gap-0.5 text-[10px] font-medium"
+              >
+                Katalog <ArrowUpRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 4: Timeboxing & Productivity */}
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
+            <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+              <span className="flex items-center gap-1.5 font-medium">
+                <Calendar className="w-4 h-4 text-violet-400" />
+                Jadwal & Timebox
+              </span>
+              <span className="text-[10px] font-mono text-violet-400">Cal.com Style</span>
+            </div>
+            <div className="text-2xl font-bold font-mono tracking-tight text-white light:text-zinc-900">
+              Focus Mode
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 pt-2 border-t dark:border-white/[0.06] light:border-zinc-200/60">
+              <span>Slot Waktu Terjadwal</span>
+              <Link
+                href="/calendar"
+                className="text-violet-400 hover:underline flex items-center gap-0.5 text-[10px] font-medium"
+              >
+                Timeline <ArrowUpRight className="w-3 h-3" />
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {/* Card 1: Finance Overview */}
-          <div className="rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group aurora-glass hover:scale-[1.01] transition-transform">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-xs font-medium text-emerald-400">
-                  <Wallet className="w-4 h-4" />
-                  <span>Total Saldo Keuangan</span>
+        {/* Universal Quick Action Command Input */}
+        <div className="aurora-glass rounded-2xl p-4 sm:p-5 border dark:border-white/[0.08] light:border-zinc-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-zinc-300 light:text-zinc-700 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+              Quick Natural Language Transaction
+            </span>
+            {parsedPreview.amount > 0 && (
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-pink-500/15 text-pink-400 border border-pink-500/30">
+                Terdeteksi: {formatIDR(parsedPreview.amount)} ({parsedPreview.note})
+              </span>
+            )}
+          </div>
+
+          <form onSubmit={handleQuickExpenseSubmit} className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={expenseInput}
+                onChange={(e) => setExpenseInput(e.target.value)}
+                placeholder="Ketik pengeluaran / pemasukan... (cth: 'kopi 25rb #jajan' atau 'gaji 5jt')"
+                className="w-full glass-input px-4 py-3 rounded-xl text-xs placeholder:text-zinc-500 focus:outline-none"
+              />
+              <span className="absolute right-3 top-3 text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-zinc-400 hidden sm:inline-block">
+                Enter ↵
+              </span>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isPending || !expenseInput.trim()}
+              className="px-5 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/25 disabled:opacity-50 cursor-pointer shrink-0"
+            >
+              {isPending ? "Mencatat..." : "Simpan Transaksi"}
+            </button>
+          </form>
+        </div>
+
+        {/* Bento Grid Main Section (8 cols left, 4 cols right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left Column (8 cols): Recent Transactions & Scratchpad */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Recent Transactions Card */}
+            <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
+                    <Wallet className="w-4 h-4 text-emerald-400" />
+                    Transaksi Terbaru
+                  </h3>
+                  <p className="text-xs text-zinc-400">Riwayat transaksi lintas dompet</p>
                 </div>
+
                 <Link
                   href="/finance"
-                  className="text-xs text-zinc-400 hover:text-emerald-400 flex items-center gap-1 transition-colors"
+                  className="text-xs font-semibold text-pink-400 hover:text-pink-300 flex items-center gap-1 transition-colors"
                 >
-                  <span>Buka Detail</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  Kelola Keuangan <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              <div className="text-3xl font-extrabold tracking-tight dark:text-white light:text-zinc-900 mb-4 font-mono">
-                {formatIDR(finance.totalBalance)}
-              </div>
-
-              {/* Wallets Pill List */}
-              <div className="space-y-2 mb-4">
-                <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Dompet Aktif</span>
-                <div className="grid grid-cols-2 gap-2">
-                  {finance.wallets.map((w) => (
-                    <div key={w.id} className="p-2.5 rounded-xl dark:bg-white/5 light:bg-zinc-100 border dark:border-white/5 light:border-zinc-200 flex flex-col">
-                      <span className="text-[11px] text-zinc-400 truncate">{w.name}</span>
-                      <span className="text-xs font-semibold dark:text-zinc-200 light:text-zinc-800 mt-0.5 font-mono">{formatIDR(w.balance)}</span>
-                    </div>
-                  ))}
+              {finance.recentTransactions.length === 0 ? (
+                <div className="py-12 text-center text-zinc-500 text-xs">
+                  Belum ada transaksi. Gunakan input di atas untuk mencatat pengeluaran pertama!
                 </div>
-              </div>
-            </div>
+              ) : (
+                <div className="space-y-2">
+                  {finance.recentTransactions.slice(0, 5).map((tx) => {
+                    const isExpense = tx.type === "expense";
+                    const dateStr = new Date(tx.date).toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "short",
+                    });
 
-            {/* Recent Transactions Preview */}
-            <div className="pt-3 border-t dark:border-white/5 light:border-zinc-200">
-              <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold block mb-2">
-                Mutasi Terakhir
-              </span>
-              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-                {finance.recentTransactions.length === 0 ? (
-                  <p className="text-xs text-zinc-500">Belum ada transaksi.</p>
-                ) : (
-                  finance.recentTransactions.map((tx) => (
-                    <div key={tx.id} className="flex items-center justify-between text-xs py-1">
-                      <span className="truncate max-w-[150px] dark:text-zinc-300 light:text-zinc-700">{tx.note || "Transaksi"}</span>
-                      <span
-                        className={`font-mono text-xs font-semibold ${
-                          tx.type === "income" ? "text-emerald-400" : "text-rose-400"
-                        }`}
+                    return (
+                      <div
+                        key={tx.id}
+                        className="flex items-center justify-between p-3.5 rounded-xl dark:bg-white/[0.03] light:bg-zinc-100/70 border dark:border-white/[0.04] light:border-zinc-200 hover:border-pink-500/30 transition-all"
                       >
-                        {tx.type === "income" ? "+" : "-"}
-                        {formatIDR(tx.amount)}
-                      </span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Comic & Reading Tracker */}
-          <div className="rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group aurora-glass hover:scale-[1.01] transition-transform">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-xs font-medium text-amber-400">
-                  <BookOpen className="w-4 h-4" />
-                  <span>Comic & Reading Log</span>
-                </div>
-                <Link
-                  href="/comics"
-                  className="text-xs text-zinc-400 hover:text-amber-400 flex items-center gap-1 transition-colors"
-                >
-                  <span>Lihat Semua</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-
-              <div className="space-y-2.5 max-h-[290px] overflow-y-auto pr-1">
-                {comicsList.length === 0 ? (
-                  <p className="text-xs text-zinc-500">Belum ada komik tersimpan.</p>
-                ) : (
-                  comicsList.map((c) => (
-                    <div
-                      key={c.id}
-                      className="p-3 rounded-xl dark:bg-white/5 light:bg-zinc-100 border dark:border-white/5 light:border-zinc-200 flex items-center justify-between gap-3 hover:border-amber-500/30 transition-all"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="text-xs font-semibold truncate dark:text-zinc-200 light:text-zinc-800">{c.title}</h4>
-                          {c.sourceUrl && (
-                            <a
-                              href={c.sourceUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-zinc-400 hover:text-amber-400 transition-colors"
-                              title="Buka link baca"
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
-                          )}
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                              isExpense
+                                ? "bg-rose-500/15 text-rose-400"
+                                : "bg-emerald-500/15 text-emerald-400"
+                            }`}
+                          >
+                            {isExpense ? (
+                              <ArrowUpRight className="w-4 h-4" />
+                            ) : (
+                              <ArrowDownLeft className="w-4 h-4" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-white light:text-zinc-900">
+                              {tx.note || "Transaksi"}
+                            </p>
+                            <p className="text-[10px] text-zinc-400">{dateStr}</p>
+                          </div>
                         </div>
-                        <span className="text-[11px] text-amber-400 font-mono font-medium">Chapter {c.currentChapter}</span>
-                      </div>
 
-                      <button
-                        onClick={() => handleIncrementChapter(c.id, c.title)}
-                        className="px-2.5 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 text-xs font-bold active:scale-90 transition-all cursor-pointer whitespace-nowrap"
-                      >
-                        +1 Ch
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
+                        <span
+                          className={`text-xs font-mono font-bold ${
+                            isExpense ? "text-rose-400" : "text-emerald-400"
+                          }`}
+                        >
+                          {isExpense ? "-" : "+"}
+                          {formatIDR(tx.amount)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
-            <p className="text-[10px] text-zinc-500 mt-4 pt-2 border-t dark:border-white/5 light:border-zinc-200">
-              Klik <b>+1 Ch</b> untuk memperbarui progress bacaan seketika.
-            </p>
+            {/* Markdown Scratchpad Card */}
+            <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-sky-400" />
+                    Scratchpad Harian
+                  </h3>
+                  <p className="text-xs text-zinc-400">
+                    Pencatat ide cepat bebas hambatan (Markdown didukung)
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleSaveNote}
+                  disabled={isSavingNote}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>{isSavingNote ? "Menyimpan..." : "Simpan"}</span>
+                </button>
+              </div>
+
+              <textarea
+                value={noteContent}
+                onChange={(e) => setNoteContent(e.target.value)}
+                placeholder="Tulis ide cepat, catatan singkat, atau potongan kode..."
+                rows={6}
+                className="w-full glass-input p-4 rounded-xl text-xs font-mono leading-relaxed resize-none focus:outline-none"
+              />
+            </div>
           </div>
 
-          {/* Card 3: Tasks & Checklist */}
-          <div className="rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group aurora-glass hover:scale-[1.01] transition-transform">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-xs font-medium text-violet-400">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>To-Do List Harian</span>
+          {/* Right Column (4 cols): Priority Tasks & Manga Tracker */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Tasks Checklist Card */}
+            <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    Checklist Tugas
+                  </h3>
+                  <p className="text-xs text-zinc-400">Prioritas kerja hari ini</p>
                 </div>
+
                 <Link
                   href="/notes"
-                  className="text-xs text-zinc-400 hover:text-violet-400 flex items-center gap-1 transition-colors"
+                  className="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-0.5"
                 >
-                  <span>Detail</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  Semua <ArrowUpRight className="w-3 h-3" />
                 </Link>
               </div>
 
-              {/* Task Add Form */}
+              {/* Add Task Quick Form */}
               <form onSubmit={handleAddTask} className="flex gap-2 mb-3">
                 <input
                   type="text"
                   value={newTaskInput}
                   onChange={(e) => setNewTaskInput(e.target.value)}
                   placeholder="Tambah tugas baru..."
-                  className="flex-1 px-3 py-1.5 text-xs dark:bg-white/5 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 rounded-xl dark:text-zinc-100 light:text-zinc-900 placeholder:text-zinc-500 focus:outline-none focus:border-violet-500/50"
+                  className="flex-1 glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="px-2.5 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs cursor-pointer"
+                  className="p-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition-all shadow-sm cursor-pointer"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-4 h-4" />
                 </button>
               </form>
 
-              {/* Task list items */}
-              <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+              {/* Task Items */}
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                 {tasksList.length === 0 ? (
-                  <p className="text-xs text-zinc-500">Semua tugas selesai!</p>
+                  <p className="text-xs text-zinc-500 py-6 text-center">Tidak ada tugas aktif.</p>
                 ) : (
-                  tasksList.map((t) => (
+                  tasksList.slice(0, 6).map((task) => (
                     <div
-                      key={t.id}
-                      onClick={() => handleToggleTask(t.id)}
-                      className={`p-2.5 rounded-xl border flex items-center gap-2.5 text-xs cursor-pointer transition-all ${
-                        t.isDone
-                          ? "dark:bg-white/[0.02] light:bg-zinc-50 border-transparent text-zinc-500 line-through"
-                          : "dark:bg-white/5 light:bg-zinc-100/90 dark:border-white/10 light:border-zinc-200 dark:text-zinc-200 light:text-zinc-800 hover:border-violet-500/40"
+                      key={task.id}
+                      onClick={() => handleToggleTask(task.id)}
+                      className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all cursor-pointer ${
+                        task.isDone
+                          ? "dark:bg-white/[0.01] light:bg-zinc-100/50 opacity-50 border-transparent"
+                          : "dark:bg-white/[0.03] light:bg-zinc-100/70 dark:border-white/[0.04] light:border-zinc-200 hover:border-emerald-500/30"
                       }`}
                     >
-                      {t.isDone ? (
+                      {task.isDone ? (
                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                       ) : (
                         <Circle className="w-4 h-4 text-zinc-400 shrink-0" />
                       )}
-                      <span className="truncate flex-1">{t.title}</span>
+                      <span
+                        className={`text-xs truncate flex-1 ${
+                          task.isDone
+                            ? "line-through text-zinc-500"
+                            : "text-white light:text-zinc-900"
+                        }`}
+                      >
+                        {task.title}
+                      </span>
                     </div>
                   ))
                 )}
               </div>
             </div>
 
-            <p className="text-[10px] text-zinc-500 mt-4 pt-2 border-t dark:border-white/5 light:border-zinc-200">
-              Tekan item untuk mencentang status selesai.
-            </p>
-          </div>
-
-          {/* Card 4: Quick Scratchpad Note */}
-          <div className="rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group aurora-glass hover:scale-[1.01] transition-transform md:col-span-2">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-xs font-medium text-sky-400">
-                  <FileText className="w-4 h-4" />
-                  <span>Scratchpad & Catatan Bebas</span>
+            {/* Reading Tracker Card */}
+            <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-amber-400" />
+                    Sedang Dibaca
+                  </h3>
+                  <p className="text-xs text-zinc-400">Update chapter dengan 1 klik</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/notes"
-                    className="text-xs text-zinc-400 hover:text-sky-400 flex items-center gap-1 transition-colors mr-2"
-                  >
-                    <span>Editor Penuh</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </Link>
-                  <button
-                    onClick={handleSaveNote}
-                    disabled={isPending}
-                    className="px-3 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-400 text-xs font-medium transition-all cursor-pointer"
-                  >
-                    Simpan
-                  </button>
-                </div>
-              </div>
 
-              <textarea
-                value={noteContent}
-                onChange={(e) => setNoteContent(e.target.value)}
-                rows={5}
-                placeholder="Tulis ide, catatan cepat, atau to-do di sini..."
-                className="w-full p-3 rounded-xl dark:bg-black/40 light:bg-white/80 border dark:border-white/10 light:border-zinc-200 text-xs dark:text-zinc-200 light:text-zinc-800 placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-sky-500/40 resize-none font-mono"
-              />
-            </div>
-            <p className="text-[10px] text-zinc-500 mt-2">
-              Dukungan Markdown. Data tersimpan secara persisten di database.
-            </p>
-          </div>
-
-          {/* Card 5: Schedule / Calendar Shortcut */}
-          <div className="rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group aurora-glass hover:scale-[1.01] transition-transform">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-xs font-medium text-purple-400">
-                  <Calendar className="w-4 h-4" />
-                  <span>Timebox & Jadwal</span>
-                </div>
                 <Link
-                  href="/calendar"
-                  className="text-xs text-zinc-400 hover:text-purple-400 flex items-center gap-1 transition-colors"
+                  href="/comics"
+                  className="text-xs font-semibold text-amber-400 hover:underline flex items-center gap-0.5"
                 >
-                  <span>Kalender</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  Katalog <ArrowUpRight className="w-3 h-3" />
                 </Link>
               </div>
 
-              <div className="p-4 rounded-xl dark:bg-white/5 light:bg-zinc-100 border dark:border-white/5 light:border-zinc-200 text-center py-6 space-y-2">
-                <div className="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <h4 className="text-xs font-semibold dark:text-zinc-200 light:text-zinc-800">Sesi Kerja Fokus</h4>
-                <p className="text-[11px] text-zinc-400 max-w-xs mx-auto">
-                  Atur blok waktu kerja harian tanpa distraksi.
-                </p>
-              </div>
-            </div>
+              {comicsList.length === 0 ? (
+                <p className="text-xs text-zinc-500 py-6 text-center">Belum ada komik aktif.</p>
+              ) : (
+                <div className="space-y-3">
+                  {comicsList.slice(0, 4).map((comic) => (
+                    <div
+                      key={comic.id}
+                      className="p-3 rounded-xl dark:bg-white/[0.03] light:bg-zinc-100/70 border dark:border-white/[0.04] light:border-zinc-200 flex items-center justify-between gap-3 hover:border-amber-500/30 transition-all"
+                    >
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        {comic.coverUrl ? (
+                          <img
+                            src={comic.coverUrl}
+                            alt={comic.title}
+                            className="w-9 h-12 object-cover rounded-lg shrink-0 border border-white/10"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-9 h-12 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 text-[10px] text-zinc-500">
+                            Manga
+                          </div>
+                        )}
+                        <div className="overflow-hidden">
+                          <p className="text-xs font-semibold text-white light:text-zinc-900 truncate">
+                            {comic.title}
+                          </p>
+                          <span className="text-[10px] font-mono text-amber-400">
+                            Ch. {comic.currentChapter}
+                          </span>
+                        </div>
+                      </div>
 
-            <p className="text-[10px] text-zinc-500 mt-2 pt-2 border-t dark:border-white/5 light:border-zinc-200">
-              Buka modul kalender untuk timeblocking penuh.
-            </p>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => handleIncrementChapter(comic.id, comic.title)}
+                          title="Tambah 1 Chapter"
+                          className="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>+1</span>
+                        </button>
+
+                        {comic.sourceUrl && (
+                          <a
+                            href={comic.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg text-zinc-400 hover:text-white dark:hover:bg-white/10 light:hover:bg-zinc-200 transition-colors"
+                            title="Baca Lanjut"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Quick Expense Modal */}
-      {expenseModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div
-            className="fixed inset-0"
-            onClick={() => setExpenseModalOpen(false)}
-            aria-hidden="true"
-          />
-
-          <div className="relative w-full max-w-md rounded-2xl border dark:border-white/15 light:border-zinc-200 dark:bg-[#121217] light:bg-white p-6 shadow-2xl z-10 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-bold dark:text-white light:text-zinc-900">
-                <Wallet className="w-4 h-4 text-emerald-400" />
-                <span>Catat Pengeluaran Cepat</span>
-              </div>
-              <kbd
-                onClick={() => setExpenseModalOpen(false)}
-                className="px-1.5 py-0.5 text-[10px] bg-white/10 text-zinc-400 rounded cursor-pointer hover:bg-white/20"
-              >
-                ESC
-              </kbd>
-            </div>
-
-            <form onSubmit={handleQuickExpenseSubmit} className="space-y-4">
-              <div>
-                <label className="text-xs text-zinc-400 block mb-1.5">
-                  Ketik natural (Contoh: <span className="text-emerald-400">kopi 25k #jajan</span> atau <span className="text-emerald-400">gaji 5jt #income</span>)
-                </label>
-                <div className="relative flex items-center">
-                  <input
-                    type="text"
-                    autoFocus
-                    value={expenseInput}
-                    onChange={(e) => setExpenseInput(e.target.value)}
-                    placeholder="kopi susu 25k #jajan..."
-                    className="w-full px-3.5 py-2.5 dark:bg-black/50 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 rounded-xl text-sm dark:text-zinc-100 light:text-zinc-900 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isPending || parsedPreview.amount <= 0}
-                    className="absolute right-2 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-xs font-medium cursor-pointer transition-all"
-                  >
-                    Simpan
-                  </button>
-                </div>
-              </div>
-
-              {/* Live Parser Feedback */}
-              {expenseInput && (
-                <div className="p-3 rounded-xl dark:bg-white/5 light:bg-zinc-100 border dark:border-white/5 light:border-zinc-200 space-y-1 text-xs">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold block">
-                    Hasil Deteksi Otomatis:
-                  </span>
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-400">Nominal:</span>
-                    <span className="font-bold text-emerald-400 font-mono">
-                      {parsedPreview.amount > 0 ? formatIDR(parsedPreview.amount) : "Belum terdeteksi"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-400">Catatan:</span>
-                    <span className="dark:text-zinc-300 light:text-zinc-700">{parsedPreview.note}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-400">Tipe:</span>
-                    <span className={parsedPreview.type === "income" ? "text-emerald-400" : "text-rose-400 font-medium"}>
-                      {parsedPreview.type === "income" ? "Pemasukan (+)" : "Pengeluaran (-)"}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Quick Note Modal */}
-      {noteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div
-            className="fixed inset-0"
-            onClick={() => setNoteModalOpen(false)}
-            aria-hidden="true"
-          />
-
-          <div className="relative w-full max-w-lg rounded-2xl border dark:border-white/15 light:border-zinc-200 dark:bg-[#121217] light:bg-white p-6 shadow-2xl z-10 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-bold dark:text-white light:text-zinc-900">
-                <FileText className="w-4 h-4 text-sky-400" />
-                <span>Scratchpad Cepat</span>
-              </div>
-              <kbd
-                onClick={() => setNoteModalOpen(false)}
-                className="px-1.5 py-0.5 text-[10px] bg-white/10 text-zinc-400 rounded cursor-pointer hover:bg-white/20"
-              >
-                ESC
-              </kbd>
-            </div>
-
-            <textarea
-              autoFocus
-              value={noteContent}
-              onChange={(e) => setNoteContent(e.target.value)}
-              rows={8}
-              placeholder="Tulis ide atau catatan cepat di sini..."
-              className="w-full p-3 rounded-xl dark:bg-black/50 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 text-xs dark:text-zinc-200 light:text-zinc-800 placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-sky-500/40 resize-none font-mono"
-            />
-
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setNoteModalOpen(false)}
-                className="px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 rounded-xl cursor-pointer"
-              >
-                Batal
-              </button>
-              <button
-                type="button"
-                onClick={handleSaveNote}
-                disabled={isPending}
-                className="px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium rounded-xl shadow cursor-pointer"
-              >
-                Simpan Catatan
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </AppShell>
   );
 }

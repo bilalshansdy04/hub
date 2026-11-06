@@ -9,11 +9,12 @@ import {
   Search,
   Plus,
   Trash2,
-  TrendingDown,
+  TrendingUp,
   CreditCard,
   Banknote,
   Smartphone,
   Sparkles,
+  ArrowRightLeft,
 } from "lucide-react";
 import { formatIDR } from "@shrimphub/core-logic";
 import {
@@ -133,121 +134,132 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
       <div className="space-y-6">
         {/* Top Summary Banner */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="aurora-glass rounded-2xl p-5 border dark:border-white/10 light:border-zinc-200">
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
             <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
               <span className="flex items-center gap-1.5 font-medium">
                 <Wallet className="w-4 h-4 text-emerald-400" />
                 Total Kekayaan Bersih
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold border border-emerald-500/25">
                 Real-Time
               </span>
             </div>
-            <div className="text-2xl font-bold tracking-tight text-white light:text-zinc-900">
+            <div className="text-3xl font-bold font-mono tracking-tight text-white light:text-zinc-900">
               {formatIDR(finance.totalBalance)}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">
-              Dari akumulasi {finance.wallets.length} dompet aktif
+            <div className="text-[11px] text-zinc-400 mt-2">
+              Akumulasi dari {finance.wallets.length} dompet aktif
             </div>
           </div>
 
-          <div className="aurora-glass rounded-2xl p-5 border dark:border-white/10 light:border-zinc-200">
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
             <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
               <span className="flex items-center gap-1.5 font-medium">
                 <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
-                Pemasukan (Terbaru)
+                Pemasukan Tercatat
               </span>
-              <span className="text-[10px] text-emerald-400 font-mono">+IDR</span>
+              <span className="text-[10px] font-mono text-emerald-400 font-bold">+IDR</span>
             </div>
-            <div className="text-2xl font-bold tracking-tight text-emerald-400">
+            <div className="text-3xl font-bold font-mono tracking-tight text-emerald-400">
               {formatIDR(totalIncome)}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">Total pemasukan tercatat</div>
+            <div className="text-[11px] text-zinc-400 mt-2">Arus kas masuk bulan ini</div>
           </div>
 
-          <div className="aurora-glass rounded-2xl p-5 border dark:border-white/10 light:border-zinc-200">
+          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
             <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
               <span className="flex items-center gap-1.5 font-medium">
                 <ArrowUpRight className="w-4 h-4 text-rose-400" />
-                Pengeluaran (Terbaru)
+                Pengeluaran Tercatat
               </span>
-              <span className="text-[10px] text-rose-400 font-mono">-IDR</span>
+              <span className="text-[10px] font-mono text-rose-400 font-bold">-IDR</span>
             </div>
-            <div className="text-2xl font-bold tracking-tight text-rose-400">
+            <div className="text-3xl font-bold font-mono tracking-tight text-rose-400">
               {formatIDR(totalExpense)}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">Total pengeluaran tercatat</div>
+            <div className="text-[11px] text-zinc-400 mt-2">Arus kas keluar tercatat</div>
           </div>
         </div>
 
-        {/* Wallets Row */}
-        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200">
-          <div className="flex items-center justify-between mb-4">
+        {/* Digital Wallets Cards Grid (Luxury FinTech Cards) */}
+        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-sm font-bold tracking-tight dark:text-white light:text-zinc-900">
-                Dompet & Rekening
+              <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-sky-400" />
+                Akun & Rekening Dompet
               </h3>
               <p className="text-xs text-zinc-400">Pilih dompet untuk memfilter transaksi</p>
             </div>
             <button
               onClick={() => setShowAddWalletModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-500/20 text-pink-400 hover:bg-pink-500/30 text-xs font-semibold border border-pink-500/30 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-pink-500/15 text-pink-400 hover:bg-pink-500/25 text-xs font-semibold border border-pink-500/30 transition-all cursor-pointer shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Tambah Dompet</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            <button
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* All Wallets Card */}
+            <div
               onClick={() => setSelectedWallet("all")}
-              className={`p-3.5 rounded-xl text-left border transition-all ${
+              className={`p-4 rounded-2xl border cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between ${
                 selectedWallet === "all"
-                  ? "bg-white/15 border-pink-500/50 shadow-sm"
-                  : "dark:bg-white/5 light:bg-zinc-100/60 dark:border-white/5 light:border-zinc-200 opacity-80 hover:opacity-100"
+                  ? "bg-gradient-to-br from-pink-500/20 via-purple-600/15 to-transparent border-pink-500/50 shadow-lg"
+                  : "dark:bg-white/[0.03] light:bg-zinc-100/70 dark:border-white/[0.05] light:border-zinc-200 hover:border-white/20"
               }`}
             >
-              <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                <span>Semua Dompet</span>
-                <Wallet className="w-3.5 h-3.5" />
+              <div className="flex items-center justify-between text-xs mb-4">
+                <span className="font-semibold text-zinc-300 light:text-zinc-700">Semua Saldo</span>
+                <Wallet className="w-4 h-4 text-pink-400" />
               </div>
-              <div className="text-sm font-bold text-white light:text-zinc-900">
-                {formatIDR(finance.totalBalance)}
+              <div>
+                <p className="text-[10px] uppercase font-mono text-zinc-400">Total Gabungan</p>
+                <p className="text-lg font-bold font-mono text-white light:text-zinc-900">
+                  {formatIDR(finance.totalBalance)}
+                </p>
               </div>
-            </button>
+            </div>
 
+            {/* Individual Wallets */}
             {finance.wallets.map((w) => (
-              <button
+              <div
                 key={w.id}
                 onClick={() => setSelectedWallet(w.id)}
-                className={`p-3.5 rounded-xl text-left border transition-all ${
+                className={`p-4 rounded-2xl border cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between ${
                   selectedWallet === w.id
-                    ? "bg-white/15 border-pink-500/50 shadow-sm"
-                    : "dark:bg-white/5 light:bg-zinc-100/60 dark:border-white/5 light:border-zinc-200 opacity-80 hover:opacity-100"
+                    ? "bg-gradient-to-br from-white/15 via-white/5 to-transparent border-pink-500/50 shadow-lg"
+                    : "dark:bg-white/[0.03] light:bg-zinc-100/70 dark:border-white/[0.05] light:border-zinc-200 hover:border-white/20"
                 }`}
               >
-                <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                  <span className="truncate">{w.name}</span>
+                <div className="flex items-center justify-between text-xs mb-4">
+                  <span className="font-semibold text-white light:text-zinc-900 truncate">
+                    {w.name}
+                  </span>
                   {getWalletIcon(w.type)}
                 </div>
-                <div className="text-sm font-bold text-white light:text-zinc-900">
-                  {formatIDR(w.balance)}
+                <div>
+                  <p className="text-[10px] uppercase font-mono text-zinc-400">{w.type}</p>
+                  <p className="text-lg font-bold font-mono text-white light:text-zinc-900">
+                    {formatIDR(w.balance)}
+                  </p>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Quick Natural Language Transaction Form */}
-        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200">
+        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-zinc-300 light:text-zinc-700 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-pink-400" />
-              Catat Cepat dengan Natural Language
+              Catat Cepat Natural Language
             </span>
-            <span className="text-[10px] text-zinc-400">
-              Contoh: <code className="text-pink-400">makan siang 35rb</code> atau{" "}
-              <code className="text-emerald-400">gaji freelance 2.5jt</code>
+            <span className="text-[10px] text-zinc-400 hidden sm:inline-block">
+              Contoh: <code className="text-pink-400">makan siang 35rb #kuliner</code> atau{" "}
+              <code className="text-emerald-400">transfer 200rb</code>
             </span>
           </div>
 
@@ -256,25 +268,25 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
               type="text"
               value={quickInput}
               onChange={(e) => setQuickInput(e.target.value)}
-              placeholder="Ketik pengeluaran/pemasukan... (cth: beli bensin 50rb)"
-              className="flex-1 px-4 py-2.5 rounded-xl text-xs dark:bg-white/5 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 focus:outline-none focus:border-pink-500 text-white light:text-zinc-900 placeholder:text-zinc-500"
+              placeholder="Ketik pengeluaran / pemasukan... (cth: beli token listrik 100rb)"
+              className="flex-1 glass-input px-4 py-2.5 rounded-xl text-xs placeholder:text-zinc-500 focus:outline-none"
             />
             <button
               type="submit"
               disabled={isSubmitting || !quickInput.trim()}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/20 disabled:opacity-50 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/25 disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? "Mencatat..." : "Catat Transaksi"}
+              {isSubmitting ? "Mencatat..." : "Simpan Transaksi"}
             </button>
           </form>
         </div>
 
-        {/* Transaction History & Filter */}
-        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200">
+        {/* Transaction History & Filter Table */}
+        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
             <div>
-              <h3 className="text-sm font-bold tracking-tight dark:text-white light:text-zinc-900">
-                Riwayat Transaksi
+              <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900">
+                Riwayat Transaksi Lengkap
               </h3>
               <p className="text-xs text-zinc-400">
                 Menampilkan {filteredTransactions.length} transaksi
@@ -283,12 +295,12 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
 
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               {/* Type Filter */}
-              <div className="flex rounded-xl p-1 bg-black/20 dark:bg-white/5 light:bg-zinc-200 border dark:border-white/5 light:border-zinc-300">
+              <div className="flex rounded-xl p-1 bg-black/20 dark:bg-white/[0.04] light:bg-zinc-200 border dark:border-white/[0.05] light:border-zinc-300">
                 <button
                   onClick={() => setFilterType("all")}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                     filterType === "all"
-                      ? "bg-white/20 text-white shadow-sm"
+                      ? "bg-white/20 text-white shadow-sm font-semibold"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -298,7 +310,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                   onClick={() => setFilterType("expense")}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                     filterType === "expense"
-                      ? "bg-rose-500/20 text-rose-400 shadow-sm"
+                      ? "bg-rose-500/20 text-rose-400 shadow-sm font-semibold"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -308,7 +320,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                   onClick={() => setFilterType("income")}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                     filterType === "income"
-                      ? "bg-emerald-500/20 text-emerald-400 shadow-sm"
+                      ? "bg-emerald-500/20 text-emerald-400 shadow-sm font-semibold"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -317,14 +329,14 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
               </div>
 
               {/* Search Bar */}
-              <div className="relative flex-1 sm:w-48">
+              <div className="relative flex-1 sm:w-52">
                 <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-zinc-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari transaksi..."
-                  className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs dark:bg-white/5 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 text-white light:text-zinc-900 focus:outline-none focus:border-pink-500"
+                  className="w-full glass-input pl-8 pr-3 py-1.5 rounded-xl text-xs placeholder:text-zinc-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -332,7 +344,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
 
           {/* Transaction List */}
           {filteredTransactions.length === 0 ? (
-            <div className="py-12 text-center text-zinc-400 text-xs">
+            <div className="py-16 text-center text-zinc-500 text-xs">
               Belum ada transaksi yang sesuai kriteria pencarian.
             </div>
           ) : (
@@ -349,7 +361,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                 return (
                   <div
                     key={tx.id}
-                    className="flex items-center justify-between p-3.5 rounded-xl dark:bg-white/5 light:bg-zinc-100/70 border dark:border-white/5 light:border-zinc-200 hover:border-pink-500/30 transition-all group"
+                    className="flex items-center justify-between p-3.5 rounded-xl dark:bg-white/[0.03] light:bg-zinc-100/70 border dark:border-white/[0.04] light:border-zinc-200 hover:border-pink-500/30 transition-all group"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -370,7 +382,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                         <div className="text-[10px] text-zinc-400 flex items-center gap-2 mt-0.5">
                           <span>{dateStr}</span>
                           <span>•</span>
-                          <span className="text-zinc-300 light:text-zinc-600">
+                          <span className="text-zinc-300 light:text-zinc-600 font-medium">
                             {wallet?.name || "Dompet"}
                           </span>
                         </div>
@@ -407,10 +419,10 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
       {showAddWalletModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md"
             onClick={() => setShowAddWalletModal(false)}
           />
-          <div className="relative w-full max-w-sm aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200 z-10">
+          <div className="relative w-full max-w-sm aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200 z-10 shadow-2xl">
             <h3 className="text-sm font-bold text-white light:text-zinc-900 mb-1">
               Tambah Dompet Baru
             </h3>
@@ -429,7 +441,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                   value={newWalletName}
                   onChange={(e) => setNewWalletName(e.target.value)}
                   placeholder="Contoh: Bank BCA, GoPay, Dompet Saku"
-                  className="w-full px-3 py-2 rounded-xl text-xs dark:bg-white/5 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 text-white light:text-zinc-900 focus:outline-none focus:border-pink-500"
+                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
                 />
               </div>
 
@@ -440,7 +452,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                 <select
                   value={newWalletType}
                   onChange={(e) => setNewWalletType(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-xl text-xs dark:bg-[#18181b] light:bg-white border dark:border-white/10 light:border-zinc-200 text-white light:text-zinc-900 focus:outline-none focus:border-pink-500"
+                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
                 >
                   <option value="bank">Rekening Bank</option>
                   <option value="ewallet">E-Wallet (GoPay, OVO, ShopeePay)</option>
@@ -457,7 +469,7 @@ export function FinanceClient({ user, finance }: FinanceClientProps) {
                   value={newWalletBalance}
                   onChange={(e) => setNewWalletBalance(e.target.value)}
                   placeholder="0"
-                  className="w-full px-3 py-2 rounded-xl text-xs dark:bg-white/5 light:bg-zinc-100 border dark:border-white/10 light:border-zinc-200 text-white light:text-zinc-900 focus:outline-none focus:border-pink-500"
+                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
                 />
               </div>
 
