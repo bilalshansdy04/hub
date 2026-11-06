@@ -3,16 +3,29 @@ import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
 
-// Priority: If .env.production exists and PROD is passed, or standard .env
-const prodEnvPath = path.resolve(process.cwd(), ".env.production");
-const rootEnvPath = path.resolve(process.cwd(), ".env");
+// Walk up directories to find root .env or .env.production
+function findEnvFile(filename: string): string | null {
+  let dir = process.cwd();
+  for (let i = 0; i < 4; i++) {
+    const candidate = path.join(dir, filename);
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
 
-if (process.env.APP_ENV === "production" && fs.existsSync(prodEnvPath)) {
+const prodEnvPath = findEnvFile(".env.production");
+const rootEnvPath = findEnvFile(".env");
+
+if (process.env.APP_ENV === "production" && prodEnvPath) {
   dotenv.config({ path: prodEnvPath });
-} else if (fs.existsSync(rootEnvPath)) {
+} else if (rootEnvPath) {
   dotenv.config({ path: rootEnvPath });
 }
 
+// Fallback to local.db only if TURSO_DATABASE_URL is not set
 const defaultDbPath = path.resolve(process.cwd(), "local.db");
 const url = process.env.TURSO_DATABASE_URL || `file:${defaultDbPath.replace(/\\/g, "/")}`;
 
