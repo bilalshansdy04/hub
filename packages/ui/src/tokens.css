@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 4.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 4.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 160 84% 39%; /* Emerald / Mint Accent */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 160 84% 39%;
+    --radius: 0.75rem;
+
+    /* Semantic module colors */
+    --color-finance-income: #10b981;
+    --color-finance-expense: #f43f5e;
+    --color-schedule: #8b5cf6;
+    --color-comics: #f59e0b;
+    --color-notes: #38bdf8;
+    --color-snippets: #ec4899;
+  }
+}
+
+/* Glassmorphism & Micro-interaction utilities */
+.shrimp-glass {
+  background: rgba(18, 18, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shrimp-glow-emerald:hover {
+  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+}
+
+.shrimp-glow-violet:hover {
+  box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.25);
+}
