@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { db, users, sessions, eq } from "@shrimphub/database";
 import crypto from "crypto";
 
-const SESSION_COOKIE_NAME = "shrimphub_session_token";
+export const SESSION_COOKIE_NAME = "shrimphub_session_token";
 export const SESSION_TTL_DAYS = 7;
 export const SESSION_TTL_MS = SESSION_TTL_DAYS * 24 * 60 * 60 * 1000;
 
@@ -43,9 +43,12 @@ export async function getUserByUsername(username: string) {
 }
 
 // ==========================================
-// 3. Sliding / Rolling Session (7-Day Inactivity)
+// 3. Sliding / Rolling Session
 // ==========================================
 
+/**
+ * Creates session in DB and sets cookie (Called inside Server Actions)
+ */
 export async function createSession(userId: string): Promise<string> {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
@@ -69,7 +72,11 @@ export async function createSession(userId: string): Promise<string> {
   return token;
 }
 
-export async function validateAndRefreshSession(): Promise<{ userId: string; username: string } | null> {
+/**
+ * Validates session (Read-only for Server Components, does not mutate cookies)
+ * Cookie expiration sliding is handled safely in middleware.ts
+ */
+export async function validateSession(): Promise<{ userId: string; username: string } | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) return null;
@@ -89,35 +96,29 @@ export async function validateAndRefreshSession(): Promise<{ userId: string; use
     .limit(1);
 
   if (activeSessions.length === 0) {
-    cookieStore.delete(SESSION_COOKIE_NAME);
     return null;
   }
 
   const session = activeSessions[0];
 
+  // If expired (> 7 days inactive)
   if (session.expiresAt.getTime() <= now.getTime()) {
-    await db.delete(sessions).where(eq(sessions.id, token));
-    cookieStore.delete(SESSION_COOKIE_NAME);
     return null;
   }
 
+  // Update session expiresAt in DB (keep DB timestamp fresh +7 days)
   const newExpiresAt = new Date(now.getTime() + SESSION_TTL_MS);
   await db
     .update(sessions)
     .set({ expiresAt: newExpiresAt })
     .where(eq(sessions.id, token));
 
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    expires: newExpiresAt,
-    path: "/",
-  });
-
   return { userId: session.userId, username: session.username };
 }
 
+/**
+ * Destroys session (Called inside Server Action)
+ */
 export async function destroySession(): Promise<void> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;

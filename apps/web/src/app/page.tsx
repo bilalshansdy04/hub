@@ -1,4 +1,4 @@
-import { validateAndRefreshSession } from "@/lib/auth";
+import { validateSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getFinanceOverview } from "@/actions/finance-actions";
 import { getComics } from "@/actions/comic-actions";
@@ -9,8 +9,8 @@ import { DashboardClient } from "@/components/dashboard-client";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  // 1. Sliding Session: Validates token & automatically extends expiration +7 days
-  const sessionUser = await validateAndRefreshSession();
+  // 1. Validates session token & updates DB timestamp
+  const sessionUser = await validateSession();
   if (!sessionUser) {
     redirect("/login");
   }

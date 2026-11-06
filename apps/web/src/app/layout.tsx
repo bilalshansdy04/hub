@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
+import { ToasterProvider } from "@/components/toaster-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,16 +37,7 @@ export default function RootLayout({
     <html lang="id" className="dark">
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-[#09090b] text-[#fafafa] antialiased`}>
         {children}
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: "#121217",
-              color: "#fafafa",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            },
-          }}
-        />
+        <ToasterProvider />
       </body>
     </html>
   );

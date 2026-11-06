@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   serverExternalPackages: ["@libsql/client", "libsql"],
-  transpilePackages: ["@shrimphub/database", "@shrimphub/ui", "@shrimphub/core-logic"],
+  transpilePackages: ["@shrimphub/database", "@shrimphub/ui", "@shrimphub/core-logic", "sonner"],
   images: {
     remotePatterns: [
       {
@@ -12,12 +12,12 @@ const nextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
-      config.externals = [...(config.externals || []), "@libsql/client", "libsql"];
+      config.externals = config.externals || [];
+      config.externals.push({
+        "@libsql/client": "commonjs @libsql/client",
+        libsql: "commonjs libsql",
+      });
     }
-    config.module.rules.push({
-      test: /\.(md|LICENSE)$/,
-      type: "asset/source",
-    });
     return config;
   },
 };
