@@ -3,50 +3,81 @@
 @tailwind utilities;
 
 @layer base {
+  /* LIGHT MODE (Default fallback when not .dark) */
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 4.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 4.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 160 84% 39%; /* Emerald / Mint Accent */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 330 81% 60%; /* Aurora Neon Rose / Magenta */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 160 84% 39%;
-    --radius: 0.75rem;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 330 81% 60%;
+    --radius: 0.85rem;
+  }
 
-    /* Semantic module colors */
-    --color-finance-income: #10b981;
-    --color-finance-expense: #f43f5e;
-    --color-schedule: #8b5cf6;
-    --color-comics: #f59e0b;
-    --color-notes: #38bdf8;
-    --color-snippets: #ec4899;
+  /* DARK MODE (Active when class 'dark' is present on <html>) */
+  .dark {
+    --background: 222 47% 3%; /* #030712 Deep Pitch OLED */
+    --foreground: 210 40% 98%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 330 81% 60%; /* Aurora Neon Rose / Magenta */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217.2 32.6% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 12%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 14%;
+    --input: 217.2 32.6% 14%;
+    --ring: 330 81% 60%;
   }
 }
 
-/* Glassmorphism & Micro-interaction utilities */
-.shrimp-glass {
-  background: rgba(18, 18, 23, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+/* Aurora Glassmorphism Utilities */
+.aurora-glass {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.dark .aurora-glass {
+  background: rgba(15, 23, 42, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.shrimp-glow-emerald:hover {
-  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+:root:not(.dark) .aurora-glass {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.05);
 }
 
-.shrimp-glow-violet:hover {
-  box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.25);
+/* Aurora Gradient Glows */
+.aurora-ambient-dark {
+  background: radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+}
+
+.aurora-ambient-light {
+  background: radial-gradient(circle at 15% 15%, rgba(244, 114, 182, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 85% 85%, rgba(52, 211, 153, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
 }

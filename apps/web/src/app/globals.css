@@ -2,39 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 4.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 4.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 160 84% 39%; /* Emerald Accent */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 160 84% 39%;
-    --radius: 0.75rem;
-
-    /* Semantic module colors */
-    --color-finance-income: #10b981;
-    --color-finance-expense: #f43f5e;
-    --color-schedule: #8b5cf6;
-    --color-comics: #f59e0b;
-    --color-notes: #38bdf8;
-    --color-snippets: #ec4899;
-  }
-}
-
 /* Global custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
@@ -45,18 +12,36 @@
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
+.dark ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 body {
-  background-color: #09090b;
-  color: #fafafa;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.dark body {
+  background-color: #030712;
+  color: #f8fafc;
+}
+
+:root:not(.dark) body {
+  background-color: #f8fafc;
+  color: #0f172a;
 }

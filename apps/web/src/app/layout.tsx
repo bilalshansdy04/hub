@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import "@shrimphub/ui/tokens.css";
 import "./globals.css";
 import { ToasterProvider } from "@/components/toaster-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#09090b",
+  themeColor: "#030712",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -35,9 +37,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="dark">
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-[#09090b] text-[#fafafa] antialiased`}>
-        {children}
-        <ToasterProvider />
+      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen antialiased`}>
+        <ThemeProvider>
+          {children}
+          <ToasterProvider />
+        </ThemeProvider>
       </body>
     </html>
   );
