@@ -11,7 +11,7 @@ export async function getFinanceOverview() {
       .select()
       .from(transactions)
       .orderBy(desc(transactions.date))
-      .limit(10);
+      .limit(30);
     const allCategories = await db.select().from(categories);
 
     const totalBalance = allWallets.reduce((acc, w) => acc + w.balance, 0);
@@ -84,9 +84,64 @@ export async function addQuickTransactionAction(rawText: string, targetWalletId?
     }
 
     revalidatePath("/");
+    revalidatePath("/finance");
     return { success: true, parsed };
   } catch (error) {
     console.error("Error creating quick transaction:", error);
     return { success: false, error: "Gagal menyimpan transaksi ke database." };
+  }
+}
+
+export async function deleteTransactionAction(txId: string) {
+  try {
+    const tx = await db.select().from(transactions).where(eq(transactions.id, txId)).limit(1);
+    if (tx.length === 0) return { success: false, error: "Transaksi tidak ditemukan." };
+
+    const transaction = tx[0];
+    const wallet = await db.select().from(wallets).where(eq(wallets.id, transaction.walletId)).limit(1);
+    
+    // Reverse the balance impact
+    if (wallet.length > 0) {
+      const reversedBal =
+        transaction.type === "income"
+          ? wallet[0].balance - transaction.amount
+          : wallet[0].balance + transaction.amount;
+
+      await db
+        .update(wallets)
+        .set({ balance: reversedBal, updatedAt: new Date() })
+        .where(eq(wallets.id, transaction.walletId));
+    }
+
+    await db.delete(transactions).where(eq(transactions.id, txId));
+
+    revalidatePath("/");
+    revalidatePath("/finance");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    return { success: false, error: "Gagal menghapus transaksi." };
+  }
+}
+
+export async function addWalletAction(name: string, type: "cash" | "bank" | "ewallet", initialBalance: number, color?: string) {
+  try {
+    const id = `wallet-${Date.now()}`;
+    await db.insert(wallets).values({
+      id,
+      name,
+      type,
+      balance: initialBalance || 0,
+      currency: "IDR",
+      color: color || "#10b981",
+      updatedAt: new Date(),
+    });
+
+    revalidatePath("/");
+    revalidatePath("/finance");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding wallet:", error);
+    return { success: false, error: "Gagal membuat dompet." };
   }
 }

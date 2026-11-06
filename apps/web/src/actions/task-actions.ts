@@ -23,6 +23,7 @@ export async function toggleTaskAction(taskId: string) {
       .where(eq(tasks.id, taskId));
 
     revalidatePath("/");
+    revalidatePath("/notes");
     return { success: true, isDone: !found[0].isDone };
   } catch (err) {
     console.error("Error toggling task:", err);
@@ -30,21 +31,34 @@ export async function toggleTaskAction(taskId: string) {
   }
 }
 
-export async function addTaskAction(title: string) {
+export async function addTaskAction(title: string, priority: "low" | "medium" | "high" = "medium") {
   if (!title.trim()) return { success: false };
   try {
     await db.insert(tasks).values({
       id: `task-${Date.now()}`,
       title: title.trim(),
       isDone: false,
-      priority: "medium",
+      priority,
       createdAt: new Date(),
     });
 
     revalidatePath("/");
+    revalidatePath("/notes");
     return { success: true };
   } catch (err) {
     console.error("Error adding task:", err);
+    return { success: false };
+  }
+}
+
+export async function deleteTaskAction(taskId: string) {
+  try {
+    await db.delete(tasks).where(eq(tasks.id, taskId));
+    revalidatePath("/");
+    revalidatePath("/notes");
+    return { success: true };
+  } catch (err) {
+    console.error("Error deleting task:", err);
     return { success: false };
   }
 }

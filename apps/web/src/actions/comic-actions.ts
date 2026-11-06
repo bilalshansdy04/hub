@@ -27,6 +27,7 @@ export async function incrementChapterAction(comicId: string) {
       .where(eq(comics.id, comicId));
 
     revalidatePath("/");
+    revalidatePath("/comics");
     return { success: true, newChapter };
   } catch (error) {
     console.error("Error incrementing chapter:", error);
@@ -39,6 +40,7 @@ export async function addComicAction(formData: FormData) {
   const sourceUrl = (formData.get("sourceUrl") as string) || "";
   const coverUrl = (formData.get("coverUrl") as string) || "";
   const currentChapter = parseFloat((formData.get("currentChapter") as string) || "1");
+  const status = (formData.get("status") as string) || "reading";
 
   if (!title) return { success: false, error: "Judul komik harus diisi." };
 
@@ -50,14 +52,43 @@ export async function addComicAction(formData: FormData) {
       sourceUrl,
       coverUrl,
       currentChapter,
-      status: "reading",
+      status,
       updatedAt: new Date(),
     });
 
     revalidatePath("/");
+    revalidatePath("/comics");
     return { success: true };
   } catch (error) {
     console.error("Error adding comic:", error);
     return { success: false, error: "Gagal menambahkan komik." };
+  }
+}
+
+export async function updateComicStatusAction(comicId: string, status: string) {
+  try {
+    await db
+      .update(comics)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(comics.id, comicId));
+
+    revalidatePath("/");
+    revalidatePath("/comics");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating status:", error);
+    return { success: false };
+  }
+}
+
+export async function deleteComicAction(comicId: string) {
+  try {
+    await db.delete(comics).where(eq(comics.id, comicId));
+    revalidatePath("/");
+    revalidatePath("/comics");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting comic:", error);
+    return { success: false };
   }
 }

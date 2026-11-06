@@ -1,6 +1,6 @@
 "use server";
 
-import { db, notes, eq } from "@shrimphub/database";
+import { db, notes, eq, desc } from "@shrimphub/database";
 import { revalidatePath } from "next/cache";
 
 export async function getPinnedNote() {
@@ -13,27 +13,53 @@ export async function getPinnedNote() {
   }
 }
 
-export async function saveNoteAction(content: string, noteId?: string) {
+export async function getAllNotes() {
+  try {
+    return await db.select().from(notes).orderBy(desc(notes.updatedAt));
+  } catch (err) {
+    console.error("Error fetching notes:", err);
+    return [];
+  }
+}
+
+export async function saveNoteAction(content: string, noteId?: string, title?: string) {
   try {
     if (noteId) {
       await db
         .update(notes)
-        .set({ content, updatedAt: new Date() })
+        .set({
+          content,
+          title: title || undefined,
+          updatedAt: new Date(),
+        })
         .where(eq(notes.id, noteId));
     } else {
       await db.insert(notes).values({
         id: `note-${Date.now()}`,
-        title: "Scratchpad Harian",
+        title: title || "Catatan Baru",
         content,
-        isPinned: true,
+        isPinned: false,
         updatedAt: new Date(),
       });
     }
 
     revalidatePath("/");
+    revalidatePath("/notes");
     return { success: true };
   } catch (err) {
     console.error("Error saving note:", err);
+    return { success: false };
+  }
+}
+
+export async function deleteNoteAction(noteId: string) {
+  try {
+    await db.delete(notes).where(eq(notes.id, noteId));
+    revalidatePath("/");
+    revalidatePath("/notes");
+    return { success: true };
+  } catch (err) {
+    console.error("Error deleting note:", err);
     return { success: false };
   }
 }
