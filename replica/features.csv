@@ -1,0 +1,33 @@
+feature,area,priority,original,clone,notes
+Single-user login with Master Password/PIN,auth,must,yes,no,Proteksi seluruh rute privat
+Session persistence with HTTP-only cookies,auth,must,yes,no,Remember me hingga 30 hari
+Universal Command Palette (Cmd+K),navigation,must,yes,no,Navigasi cepat dan global action
+Bento Dashboard Overview,dashboard,must,yes,no,Ringkasan semua modul di 1 layar
+Quick natural language transaction input,finance,must,yes,no,Ketik 'kopi 20k' langsung jadi transaksi
+Wallet balance calculation,finance,must,yes,no,Kalkulasi saldo dompet otomatis
+Transaction history & filtering,finance,must,yes,no,Filter per dompet atau kategori
+Daily burn-rate metric,finance,must,yes,no,Rata-rata pengeluaran harian
+Timeboxing schedule view,schedule,must,yes,no,Kalender blok waktu harian
+Create & complete schedule block,schedule,must,yes,no,Tandai blok waktu selesai
+Quick markdown scratchpad,notes,must,yes,no,Auto-save per ketikan
+Task checklist (Today & Later),notes,must,yes,no,Centang tugas selesai
+Comic catalog reading list,comics,must,yes,no,Status reading/plan/completed
+One-click chapter increment (+1),comics,must,yes,no,Satu klik update nomor chapter
+Direct external reading link,comics,must,yes,no,Tombol buka chapter di web sumber
+Snippet code/text editor,snippets,must,yes,no,Syntax highlight multi-bahasa
+Snippet theme & padding options,snippets,must,yes,no,Pilihan tema visual kartu
+Export snippet as PNG/copy,snippets,must,yes,no,Export kartu kode berkualitas tinggi
+Visual monthly expense chart,finance,should,yes,no,Bar chart / breakdown kategori
+Multiple wallet accounts,finance,should,yes,no,Cash Bank E-wallet
+Recurring bills reminder,finance,should,yes,no,Tagihan bulanan
+Drag-and-drop calendar blocks,schedule,should,yes,no,Geser jam event
+Focus timer (Pomodoro style),schedule,should,yes,no,Timer fokus terhubung ke blok waktu
+Pinned notes & rich markdown,notes,should,yes,no,Format judul dan list rapi
+Comic cover image preview,comics,should,yes,no,URL gambar cover eksternal
+PWA Offline caching,platform,should,yes,no,Install ke desktop/HP
+Keyboard shortcuts guide,navigation,could,yes,no,Modal bantuan tombol shortcut
+Sound effects for micro-interactions,ux,could,yes,no,Audio klik halus (toggleable)
+Customizable Bento layout,dashboard,could,yes,no,Drag or reorder kartu widget
+Dark / Light / OLED theme switch,ux,could,yes,no,Default OLED Dark
+Full image scraping on server,comics,could,no,skip,DMCA risk & bandwidth cost
+Multi-user collaboration,auth,could,no,skip,Fokus untuk penggunaan pribadi
