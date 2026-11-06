@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: false,
   serverExternalPackages: ["@libsql/client", "libsql"],
   transpilePackages: ["@shrimphub/database", "@shrimphub/ui", "@shrimphub/core-logic", "sonner"],
   images: {

@@ -9,11 +9,7 @@ import {
   Plus,
   Trash2,
   Save,
-  Check,
-  Sparkles,
   ListTodo,
-  Calendar,
-  Layers,
 } from "lucide-react";
 import { saveNoteAction, deleteNoteAction } from "@/actions/note-actions";
 import { addTaskAction, toggleTaskAction, deleteTaskAction } from "@/actions/task-actions";
@@ -152,33 +148,33 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
   const getPriorityBadge = (p: string) => {
     switch (p) {
       case "high":
-        return "bg-rose-500/15 text-rose-400 border-rose-500/30";
+        return "bg-rose-500/10 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30";
       case "low":
-        return "bg-sky-500/15 text-sky-400 border-sky-500/30";
+        return "bg-sky-500/10 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400 border-sky-500/30";
       default:
-        return "bg-amber-500/15 text-amber-400 border-amber-500/30";
+        return "bg-amber-500/10 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30";
     }
   };
 
   return (
     <AppShell user={user}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Markdown Notes & Scratchpad (7 cols) */}
+        {/* Left Column: Markdown Notes & Scratchpad (Notion style, 7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-sky-400" />
+              <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
+                <FileText className="w-5 h-5 text-sky-500 dark:text-sky-400" />
                 Catatan & Scratchpad
               </h2>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Pencatat ide cepat, to-do harian, dan markdown bebas
               </p>
             </div>
 
             <button
               onClick={handleCreateNewNote}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/15 text-sky-300 hover:bg-sky-500/25 text-xs font-semibold border border-sky-500/30 transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-300 hover:bg-sky-500/20 text-xs font-semibold border border-sky-500/30 transition-all cursor-pointer shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Catatan Baru</span>
@@ -186,20 +182,20 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
           </div>
 
           {/* Editor Card */}
-          <div className="aurora-glass rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200 space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b dark:border-white/[0.06] light:border-zinc-200">
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-5 border border-zinc-200 dark:border-white/[0.08] shadow-sm space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-white/[0.06]">
               <input
                 type="text"
                 value={activeTitle}
                 onChange={(e) => setActiveTitle(e.target.value)}
                 placeholder="Judul Catatan..."
-                className="font-bold text-sm bg-transparent text-white light:text-zinc-900 focus:outline-none flex-1 mr-4 py-1"
+                className="font-bold text-sm bg-transparent text-zinc-900 dark:text-white focus:outline-none flex-1 mr-4 py-1"
               />
 
               <button
                 onClick={handleSaveNote}
                 disabled={isSavingNote}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold transition-all shadow-md shadow-sky-500/20 disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>{isSavingNote ? "Menyimpan..." : "Simpan"}</span>
@@ -211,17 +207,17 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
               onChange={(e) => setActiveContent(e.target.value)}
               placeholder="Tulis ide cepat, catatan meeting, atau potongan artikel di sini (Markdown didukung)..."
               rows={14}
-              className="w-full glass-input p-4 rounded-xl text-xs leading-relaxed font-mono resize-none focus:outline-none"
+              className="w-full p-4 rounded-xl text-xs leading-relaxed font-mono resize-none bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-sky-500"
             />
           </div>
 
-          {/* Saved Notes Carousel */}
-          <div className="aurora-glass rounded-2xl p-4 border dark:border-white/[0.08] light:border-zinc-200">
-            <span className="text-xs font-bold text-zinc-300 light:text-zinc-700 block mb-3">
+          {/* Saved Notes List */}
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-4 border border-zinc-200 dark:border-white/[0.08] shadow-sm">
+            <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 block mb-3">
               Catatan Tersimpan ({notesList.length})
             </span>
             {notesList.length === 0 ? (
-              <p className="text-xs text-zinc-500">Belum ada catatan.</p>
+              <p className="text-xs text-zinc-400 dark:text-zinc-500">Belum ada catatan.</p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {notesList.map((n) => (
@@ -230,15 +226,15 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                     onClick={() => handleSelectNote(n)}
                     className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                       activeNoteId === n.id
-                        ? "bg-white/15 border-sky-500/50 shadow-sm"
-                        : "dark:bg-white/[0.03] light:bg-zinc-100/60 dark:border-white/[0.04] light:border-zinc-200 hover:border-sky-500/30"
+                        ? "bg-sky-50 dark:bg-sky-500/15 border-sky-500/50 shadow-sm"
+                        : "bg-zinc-50 dark:bg-white/[0.03] border-zinc-200 dark:border-white/[0.04] hover:border-sky-500/30"
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <p className="text-xs font-semibold text-white light:text-zinc-900 truncate">
+                      <p className="text-xs font-semibold text-zinc-900 dark:text-white truncate">
                         {n.title || "Tanpa Judul"}
                       </p>
-                      <p className="text-[10px] text-zinc-400 truncate">
+                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
                         {n.content.slice(0, 40) || "(kosong)"}
                       </p>
                     </div>
@@ -248,7 +244,7 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                         e.stopPropagation();
                         handleDeleteNote(n.id);
                       }}
-                      className="p-1 text-zinc-500 hover:text-rose-400 transition-colors"
+                      className="p-1 text-zinc-400 hover:text-rose-500 transition-colors"
                       title="Hapus"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -260,19 +256,19 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
           </div>
         </div>
 
-        {/* Right Column: To-Do & Task Manager (5 cols) */}
+        {/* Right Column: To-Do & Task Manager (Linear style, 5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
-              <ListTodo className="w-5 h-5 text-emerald-400" />
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
+              <ListTodo className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
               To-Do & Tasks
             </h2>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Checklist tugas prioritas harian
             </p>
           </div>
 
-          <div className="aurora-glass rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200 space-y-4">
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-5 border border-zinc-200 dark:border-white/[0.08] shadow-sm space-y-4">
             {/* Add Task Form */}
             <form onSubmit={handleAddTask} className="space-y-2">
               <div className="flex gap-2">
@@ -281,18 +277,18 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
                   placeholder="Tambahkan tugas baru..."
-                  className="flex-1 glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                  className="flex-1 px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-emerald-500"
                 />
                 <button
                   type="submit"
-                  className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[11px] text-zinc-400">Prioritas:</span>
+                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">Prioritas:</span>
                 <div className="flex gap-1.5">
                   {(["low", "medium", "high"] as const).map((p) => (
                     <button
@@ -302,7 +298,7 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                       className={`px-2 py-0.5 rounded-lg text-[10px] font-mono capitalize border transition-all ${
                         newTaskPriority === p
                           ? getPriorityBadge(p)
-                          : "text-zinc-500 border-transparent hover:text-zinc-300"
+                          : "text-zinc-500 border-transparent hover:text-zinc-700 dark:hover:text-zinc-300"
                       }`}
                     >
                       {p}
@@ -313,7 +309,7 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
             </form>
 
             {/* Filter Tabs */}
-            <div className="flex rounded-xl p-1 bg-black/20 dark:bg-white/[0.04] light:bg-zinc-200 border dark:border-white/[0.05] light:border-zinc-300">
+            <div className="flex rounded-xl p-1 bg-zinc-100 dark:bg-white/[0.04] border border-zinc-200 dark:border-white/[0.05]">
               {[
                 { id: "all", label: "Semua" },
                 { id: "active", label: "Aktif" },
@@ -324,8 +320,8 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                   onClick={() => setTaskFilter(tab.id as any)}
                   className={`flex-1 py-1 rounded-lg text-xs font-medium transition-all ${
                     taskFilter === tab.id
-                      ? "bg-white/20 text-white shadow-sm font-semibold"
-                      : "text-zinc-400 hover:text-white"
+                      ? "bg-white dark:bg-white/20 text-zinc-900 dark:text-white shadow-sm font-semibold"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
                   }`}
                 >
                   {tab.label}
@@ -335,7 +331,7 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
 
             {/* Task List */}
             {filteredTasks.length === 0 ? (
-              <div className="py-12 text-center text-zinc-500 text-xs">
+              <div className="py-12 text-center text-zinc-400 dark:text-zinc-500 text-xs">
                 Tidak ada tugas yang sesuai.
               </div>
             ) : (
@@ -345,17 +341,17 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                     key={t.id}
                     className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition-all ${
                       t.isDone
-                        ? "dark:bg-white/[0.01] light:bg-zinc-100/50 opacity-50 border-transparent"
-                        : "dark:bg-white/[0.03] light:bg-zinc-100/80 dark:border-white/[0.04] light:border-zinc-200 hover:border-emerald-500/30"
+                        ? "bg-zinc-100 dark:bg-white/[0.01] opacity-50 border-transparent"
+                        : "bg-zinc-50 dark:bg-white/[0.03] border-zinc-200 dark:border-white/[0.04] hover:border-emerald-500/30"
                     }`}
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
                       <button
                         onClick={() => handleToggleTask(t.id)}
-                        className="text-zinc-400 hover:text-emerald-400 transition-colors cursor-pointer shrink-0"
+                        className="text-zinc-400 hover:text-emerald-500 transition-colors cursor-pointer shrink-0"
                       >
                         {t.isDone ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                         ) : (
                           <Circle className="w-4 h-4" />
                         )}
@@ -365,8 +361,8 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
                         <p
                           className={`text-xs font-medium truncate ${
                             t.isDone
-                              ? "line-through text-zinc-500"
-                              : "text-white light:text-zinc-900"
+                              ? "line-through text-zinc-400 dark:text-zinc-500"
+                              : "text-zinc-900 dark:text-white"
                           }`}
                         >
                           {t.title}
@@ -383,7 +379,7 @@ export function NotesClient({ user, allNotes, allTasks }: NotesClientProps) {
 
                     <button
                       onClick={() => handleDeleteTask(t.id)}
-                      className="p-1 text-zinc-500 hover:text-rose-400 transition-colors cursor-pointer shrink-0"
+                      className="p-1 text-zinc-400 hover:text-rose-500 transition-colors cursor-pointer shrink-0"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

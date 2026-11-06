@@ -9,8 +9,6 @@ import {
   CheckCircle2,
   Circle,
   Trash2,
-  Sparkles,
-  Zap,
   Target,
   Flame,
 } from "lucide-react";
@@ -106,31 +104,31 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
     switch (cat) {
       case "focus":
         return {
-          badge: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+          badge: "bg-purple-500/10 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30",
           bar: "bg-purple-500",
           label: "Deep Focus",
         };
       case "meeting":
         return {
-          badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+          badge: "bg-amber-500/10 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
           bar: "bg-amber-500",
           label: "Meeting / Diskusi",
         };
       case "routine":
         return {
-          badge: "bg-sky-500/15 text-sky-400 border-sky-500/30",
+          badge: "bg-sky-500/10 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400 border-sky-500/30",
           bar: "bg-sky-500",
           label: "Routine Task",
         };
       case "rest":
         return {
-          badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+          badge: "bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
           bar: "bg-emerald-500",
           label: "Rest & Recovery",
         };
       default:
         return {
-          badge: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+          badge: "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/30",
           bar: "bg-zinc-500",
           label: "Task",
         };
@@ -142,13 +140,13 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
       <div className="space-y-6">
         {/* Header Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
-            <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-5 border border-zinc-200 dark:border-white/[0.08] shadow-sm">
+            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-2">
               <span className="flex items-center gap-1.5 font-medium">
-                <CalendarIcon className="w-4 h-4 text-violet-400" />
+                <CalendarIcon className="w-4 h-4 text-violet-500 dark:text-violet-400" />
                 Kalender Timebox
               </span>
-              <span className="text-[10px] font-mono text-zinc-400">
+              <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
                 {new Date().toLocaleDateString("id-ID", {
                   weekday: "long",
                   day: "numeric",
@@ -156,44 +154,44 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                 })}
               </span>
             </div>
-            <div className="text-3xl font-bold font-mono tracking-tight text-white light:text-zinc-900">
+            <div className="text-3xl font-bold font-mono tracking-tight text-zinc-900 dark:text-white">
               {blocks.length} Slot
             </div>
-            <div className="text-[11px] text-zinc-400 mt-2">Blok fokus aktif hari ini</div>
+            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-2">Blok fokus aktif hari ini</div>
           </div>
 
-          <div className="aurora-glass aurora-card-interactive rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200">
-            <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-5 border border-zinc-200 dark:border-white/[0.08] shadow-sm">
+            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-2">
               <span className="flex items-center gap-1.5 font-medium">
-                <Target className="w-4 h-4 text-emerald-400" />
+                <Target className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
                 Efisiensi & Eksekusi
               </span>
-              <span className="text-[10px] font-mono text-emerald-400 font-bold">{progressPercent}%</span>
+              <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">{progressPercent}%</span>
             </div>
-            <div className="text-3xl font-bold font-mono tracking-tight text-emerald-400">
+            <div className="text-3xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
               {completedCount} / {blocks.length}
             </div>
-            <div className="w-full bg-white/10 rounded-full h-1.5 mt-3 overflow-hidden">
+            <div className="w-full bg-zinc-200 dark:bg-white/10 rounded-full h-1.5 mt-3 overflow-hidden">
               <div
-                className="bg-emerald-400 h-full rounded-full transition-all duration-500"
+                className="bg-emerald-500 h-full rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>
 
-          <div className="aurora-glass rounded-2xl p-5 border dark:border-white/[0.08] light:border-zinc-200 flex flex-col justify-between">
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-5 border border-zinc-200 dark:border-white/[0.08] shadow-sm flex flex-col justify-between">
             <div>
-              <div className="text-xs font-semibold text-zinc-300 light:text-zinc-700 mb-1 flex items-center gap-1.5">
-                <Flame className="w-4 h-4 text-pink-400" />
+              <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1 flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-pink-500" />
                 Timeboxing Philosophy
               </div>
-              <p className="text-xs text-zinc-400 leading-relaxed">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Tolak multitasking. Alokasikan jendela waktu terisolasi untuk satu prioritas utama.
               </p>
             </div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="mt-3 flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white text-xs font-bold shadow-md shadow-violet-500/20 transition-all cursor-pointer"
+              className="mt-3 flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-xs font-bold shadow-sm transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Tambah Blok Waktu</span>
@@ -201,21 +199,21 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
           </div>
         </div>
 
-        {/* Schedule Timeline Grid */}
-        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
+        {/* Schedule Timeline Grid (Cal.com style) */}
+        <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-6 border border-zinc-200 dark:border-white/[0.08] shadow-sm">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900">
+              <h3 className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white">
                 Timeline Agenda Harian
               </h3>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Urutan terstruktur dari slot fokus hingga waktu istirahat
               </p>
             </div>
 
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 text-xs font-semibold border border-violet-500/30 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 text-xs font-semibold border border-violet-500/30 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Tambah Slot</span>
@@ -223,7 +221,7 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
           </div>
 
           {blocks.length === 0 ? (
-            <div className="py-20 text-center text-zinc-500 text-xs">
+            <div className="py-20 text-center text-zinc-400 dark:text-zinc-500 text-xs">
               Belum ada blok jadwal hari ini. Klik &quot;Tambah Slot&quot; untuk merancang hari produktifmu!
             </div>
           ) : (
@@ -240,17 +238,17 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                     key={block.id}
                     className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
                       block.isCompleted
-                        ? "dark:bg-white/[0.01] light:bg-zinc-100/40 opacity-50 border-transparent"
-                        : "dark:bg-white/[0.03] light:bg-zinc-100/80 dark:border-white/[0.05] light:border-zinc-200 hover:border-violet-500/40"
+                        ? "bg-zinc-100 dark:bg-white/[0.01] opacity-50 border-transparent"
+                        : "bg-zinc-50 dark:bg-white/[0.03] border-zinc-200 dark:border-white/[0.05] hover:border-violet-500/40"
                     }`}
                   >
                     <div className="flex items-center gap-4">
                       <button
                         onClick={() => handleToggle(block.id)}
-                        className="text-zinc-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                        className="text-zinc-400 hover:text-emerald-500 transition-colors cursor-pointer"
                       >
                         {block.isCompleted ? (
-                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                         ) : (
                           <Circle className="w-5 h-5" />
                         )}
@@ -261,8 +259,8 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                           <span
                             className={`text-xs font-bold ${
                               block.isCompleted
-                                ? "line-through text-zinc-500"
-                                : "text-white light:text-zinc-900"
+                                ? "line-through text-zinc-400 dark:text-zinc-500"
+                                : "text-zinc-900 dark:text-white"
                             }`}
                           >
                             {block.title}
@@ -274,8 +272,8 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 mt-1">
-                          <Clock className="w-3 h-3 text-zinc-500" />
+                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400 mt-1">
+                          <Clock className="w-3 h-3 text-zinc-400" />
                           <span>
                             {sStr} — {eStr}
                           </span>
@@ -285,7 +283,7 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
 
                     <button
                       onClick={() => handleDelete(block.id)}
-                      className="p-1.5 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -304,17 +302,17 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
             className="fixed inset-0 bg-black/70 backdrop-blur-md"
             onClick={() => setShowAddModal(false)}
           />
-          <div className="relative w-full max-w-sm aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200 z-10 shadow-2xl">
-            <h3 className="text-sm font-bold text-white light:text-zinc-900 mb-1">
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#0e121b] rounded-2xl p-6 border border-zinc-200 dark:border-white/10 z-10 shadow-2xl">
+            <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
               Tambah Blok Jadwal Baru
             </h3>
-            <p className="text-xs text-zinc-400 mb-4">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
               Tentukan slot fokus untuk produktivitas maksimal
             </p>
 
             <form onSubmit={handleCreateBlock} className="space-y-3">
               <div>
-                <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                   Nama Aktivitas
                 </label>
                 <input
@@ -323,18 +321,18 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Contoh: Coding Auth Module, Review Dokumen"
-                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-violet-500"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                   Kategori
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as any)}
-                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-violet-500"
                 >
                   <option value="focus">Deep Focus (Koding / Kerja Inti)</option>
                   <option value="routine">Routine (Email / Admin / Olahraga)</option>
@@ -345,7 +343,7 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                  <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                     Jam Mulai
                   </label>
                   <input
@@ -353,11 +351,11 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                     required
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-violet-500"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                  <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                     Jam Selesai
                   </label>
                   <input
@@ -365,7 +363,7 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                     required
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-violet-500"
                   />
                 </div>
               </div>
@@ -374,14 +372,14 @@ export function CalendarClient({ user, blocks }: CalendarClientProps) {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-2 text-xs rounded-xl border dark:border-white/10 light:border-zinc-200 text-zinc-400 hover:text-white"
+                  className="flex-1 py-2 text-xs rounded-xl border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-2 text-xs font-bold rounded-xl bg-violet-500 hover:bg-violet-600 text-white transition-all shadow-md shadow-violet-500/20"
+                  className="flex-1 py-2 text-xs font-bold rounded-xl bg-violet-500 hover:bg-violet-600 text-white transition-all shadow-sm"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan Slot"}
                 </button>

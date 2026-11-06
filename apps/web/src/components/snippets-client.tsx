@@ -8,10 +8,6 @@ import {
   Check,
   Save,
   Trash2,
-  Sparkles,
-  Sliders,
-  Palette,
-  Terminal,
 } from "lucide-react";
 import { saveSnippetAction, deleteSnippetAction } from "@/actions/snippet-actions";
 import { toast } from "sonner";
@@ -110,11 +106,11 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
-              <Code2 className="w-5 h-5 text-pink-400" />
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
+              <Code2 className="w-5 h-5 text-pink-500 dark:text-pink-400" />
               Snippet & Card Studio
             </h2>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Ray.so style code beautifier untuk screenshot presentasi dan dokumentasi
             </p>
           </div>
@@ -122,16 +118,16 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl dark:bg-white/[0.05] light:bg-zinc-100 hover:bg-white/10 text-xs font-semibold text-zinc-200 light:text-zinc-800 border dark:border-white/[0.08] light:border-zinc-200 transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-white/[0.05] hover:bg-zinc-200 dark:hover:bg-white/10 text-xs font-semibold text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-white/[0.08] transition-all cursor-pointer shadow-sm"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
               <span>{copied ? "Tersalin!" : "Salin Kode"}</span>
             </button>
 
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/25 disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
             >
               <Save className="w-4 h-4" />
               <span>{isSaving ? "Menyimpan..." : "Simpan Snippet"}</span>
@@ -139,28 +135,28 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
           </div>
         </div>
 
-        {/* Studio Controls Row */}
-        <div className="aurora-glass rounded-2xl p-4 border dark:border-white/[0.08] light:border-zinc-200 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Studio Controls Row (Ray.so style) */}
+        <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-4 border border-zinc-200 dark:border-white/[0.08] shadow-sm grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+            <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
               Nama File
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full glass-input px-3 py-1.5 rounded-xl text-xs focus:outline-none"
+              className="w-full px-3 py-1.5 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-pink-500"
             />
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+            <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
               Bahasa Kode
             </label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full glass-input px-3 py-1.5 rounded-xl text-xs focus:outline-none"
+              className="w-full px-3 py-1.5 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-pink-500"
             >
               <option value="typescript">TypeScript</option>
               <option value="javascript">JavaScript</option>
@@ -173,7 +169,7 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+            <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
               Canvas Background
             </label>
             <select
@@ -182,7 +178,7 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
                 const found = THEMES.find((t) => t.id === e.target.value);
                 if (found) setTheme(found);
               }}
-              className="w-full glass-input px-3 py-1.5 rounded-xl text-xs focus:outline-none"
+              className="w-full px-3 py-1.5 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-pink-500"
             >
               {THEMES.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -193,7 +189,7 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+            <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
               Padding Frame ({padding}px)
             </label>
             <div className="flex gap-2">
@@ -204,8 +200,8 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
                   onClick={() => setPadding(pad)}
                   className={`flex-1 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                     padding === pad
-                      ? "bg-pink-500/20 text-pink-400 border-pink-500/40"
-                      : "dark:bg-white/[0.04] light:bg-zinc-100 border-transparent text-zinc-400"
+                      ? "bg-pink-50 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 border-pink-500/40"
+                      : "bg-zinc-50 dark:bg-white/[0.04] border-zinc-200 dark:border-white/5 text-zinc-500 dark:text-zinc-400"
                   }`}
                 >
                   {pad}px
@@ -215,7 +211,7 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
           </div>
         </div>
 
-        {/* Live Card Preview Canvas */}
+        {/* Live Card Preview Canvas (Ray.so Mac Frame) */}
         <div
           className={`rounded-3xl transition-all duration-300 flex items-center justify-center overflow-x-auto shadow-2xl ${theme.bg}`}
           style={{ padding: `${padding}px` }}
@@ -235,7 +231,7 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
               <span className="text-[10px] text-zinc-500 uppercase font-mono">{language}</span>
             </div>
 
-            {/* Code Input */}
+            {/* Code Input Area */}
             <div className="p-4 sm:p-5">
               <textarea
                 value={code}
@@ -243,27 +239,27 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
                 rows={10}
                 spellCheck={false}
                 placeholder="// Masukkan kode Anda di sini..."
-                className="w-full bg-transparent font-mono text-xs text-pink-200/90 leading-relaxed resize-none focus:outline-none selection:bg-pink-500/30"
+                className="w-full bg-transparent font-mono text-xs text-pink-200 leading-relaxed resize-none focus:outline-none selection:bg-pink-500/30"
               />
             </div>
           </div>
         </div>
 
         {/* Saved Snippets List */}
-        <div className="aurora-glass rounded-2xl p-6 border dark:border-white/[0.08] light:border-zinc-200">
+        <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-6 border border-zinc-200 dark:border-white/[0.08] shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-bold tracking-tight text-white light:text-zinc-900">
+              <h3 className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white">
                 Daftar Snippet Tersimpan
               </h3>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Klik kartu untuk memuat ulang ke studio
               </p>
             </div>
           </div>
 
           {localSnippets.length === 0 ? (
-            <div className="py-12 text-center text-zinc-500 text-xs">
+            <div className="py-12 text-center text-zinc-400 dark:text-zinc-500 text-xs">
               Belum ada snippet tersimpan di database.
             </div>
           ) : (
@@ -271,32 +267,32 @@ export function SnippetsClient({ user, snippetsList }: SnippetsClientProps) {
               {localSnippets.map((snip) => (
                 <div
                   key={snip.id}
-                  className="p-3.5 rounded-xl dark:bg-white/[0.03] light:bg-zinc-100/70 border dark:border-white/[0.04] light:border-zinc-200 hover:border-pink-500/30 transition-all group flex flex-col justify-between"
+                  className="p-3.5 rounded-xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/[0.04] hover:border-pink-500/30 transition-all group flex flex-col justify-between"
                 >
                   <div
                     onClick={() => handleLoadSnippet(snip)}
                     className="cursor-pointer space-y-1.5"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white light:text-zinc-900 truncate">
+                      <span className="text-xs font-bold text-zinc-900 dark:text-white truncate">
                         {snip.title}
                       </span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-pink-300">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-white/10 text-pink-600 dark:text-pink-300 font-semibold">
                         {snip.language}
                       </span>
                     </div>
-                    <pre className="text-[10px] text-zinc-400 font-mono line-clamp-3 overflow-hidden bg-black/40 p-2.5 rounded-lg border border-white/5">
+                    <pre className="text-[10px] text-zinc-600 dark:text-zinc-400 font-mono line-clamp-3 overflow-hidden bg-zinc-100 dark:bg-black/40 p-2.5 rounded-lg border border-zinc-200 dark:border-white/5">
                       {snip.code}
                     </pre>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t dark:border-white/[0.05] light:border-zinc-200/60 mt-2">
-                    <span className="text-[10px] text-zinc-500">
+                  <div className="flex items-center justify-between pt-2 border-t border-zinc-200 dark:border-white/[0.05] mt-2">
+                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
                       {new Date(snip.createdAt).toLocaleDateString("id-ID")}
                     </span>
                     <button
                       onClick={() => handleDelete(snip.id)}
-                      className="p-1 rounded text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                      className="p-1 rounded text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
                       title="Hapus"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

@@ -8,9 +8,6 @@ import {
   ExternalLink,
   Search,
   Trash2,
-  BookmarkCheck,
-  Check,
-  Sparkles,
   Library,
 } from "lucide-react";
 import {
@@ -115,27 +112,27 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-white light:text-zinc-900 flex items-center gap-2">
-              <Library className="w-5 h-5 text-amber-400" />
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
+              <Library className="w-5 h-5 text-amber-500 dark:text-amber-400" />
               Reading & Manga Tracker
             </h2>
-            <p className="text-xs text-zinc-400">
-              Kenmei/AniList style tracker tanpa risiko server hosting konten ilegal
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Kenmei style tracker tanpa risiko server hosting konten gambar
             </p>
           </div>
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-pink-500 text-white text-xs font-bold shadow-md shadow-amber-500/20 hover:opacity-90 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Komik</span>
           </button>
         </div>
 
-        {/* Filter Tabs & Search Bar */}
-        <div className="aurora-glass rounded-2xl p-4 border dark:border-white/[0.08] light:border-zinc-200 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex rounded-xl p-1 bg-black/20 dark:bg-white/[0.04] light:bg-zinc-200 border dark:border-white/[0.05] light:border-zinc-300 w-full md:w-auto">
+        {/* Filter Tabs & Search Bar (Kenmei style) */}
+        <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-4 border border-zinc-200 dark:border-white/[0.08] shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="flex rounded-xl p-1 bg-zinc-100 dark:bg-white/[0.04] border border-zinc-200 dark:border-white/[0.05] w-full md:w-auto">
             {[
               { id: "all", label: "Semua" },
               { id: "reading", label: "Sedang Dibaca" },
@@ -147,8 +144,8 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                 onClick={() => setFilterStatus(tab.id)}
                 className={`flex-1 md:flex-none px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   filterStatus === tab.id
-                    ? "bg-white/20 text-white shadow-sm font-semibold"
-                    : "text-zinc-400 hover:text-white"
+                    ? "bg-white dark:bg-white/20 text-zinc-900 dark:text-white shadow-sm font-semibold"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
                 }`}
               >
                 {tab.label}
@@ -163,14 +160,14 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari judul komik..."
-              className="w-full glass-input pl-9 pr-3 py-2 rounded-xl text-xs placeholder:text-zinc-500 focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500"
             />
           </div>
         </div>
 
-        {/* Comic Catalog Grid (Refined 3:4 Posters) */}
+        {/* Comic Catalog Grid (Kenmei Posters) */}
         {filteredComics.length === 0 ? (
-          <div className="aurora-glass rounded-2xl p-20 text-center text-zinc-500 text-xs border dark:border-white/[0.08] light:border-zinc-200">
+          <div className="bg-white dark:bg-[#0e121b]/80 rounded-2xl p-20 text-center text-zinc-400 dark:text-zinc-500 text-xs border border-zinc-200 dark:border-white/[0.08] shadow-sm">
             Tidak ada komik yang sesuai. Tambahkan judul baru untuk mulai melacak!
           </div>
         ) : (
@@ -178,10 +175,10 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
             {filteredComics.map((comic) => (
               <div
                 key={comic.id}
-                className="group aurora-glass aurora-card-interactive rounded-2xl overflow-hidden border dark:border-white/[0.08] light:border-zinc-200 flex flex-col justify-between"
+                className="group bg-white dark:bg-[#0e121b]/80 rounded-2xl overflow-hidden border border-zinc-200 dark:border-white/[0.08] shadow-sm hover:border-amber-500/40 transition-all flex flex-col justify-between"
               >
                 {/* Poster Cover Area */}
-                <div className="relative aspect-[3/4] bg-zinc-900 overflow-hidden">
+                <div className="relative aspect-[3/4] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
                   {comic.coverUrl ? (
                     <img
                       src={comic.coverUrl}
@@ -192,8 +189,8 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                       }}
                     />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 p-4 text-center">
-                      <BookOpen className="w-8 h-8 mb-2 opacity-40" />
+                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 p-4 text-center">
+                      <BookOpen className="w-8 h-8 mb-2 opacity-50" />
                       <span className="text-[10px] font-mono">No Image</span>
                     </div>
                   )}
@@ -203,7 +200,7 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
 
                   {/* Chapter Pill */}
                   <div className="absolute top-2 left-2">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-black/70 backdrop-blur-md text-amber-400 border border-amber-500/40 shadow-sm">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-black/75 backdrop-blur-md text-amber-400 border border-amber-500/40 shadow-sm">
                       Ch. {comic.currentChapter}
                     </span>
                   </div>
@@ -213,7 +210,7 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                     <select
                       value={comic.status}
                       onChange={(e) => handleStatusChange(comic.id, e.target.value)}
-                      className="text-[9px] px-1.5 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-zinc-300 border border-white/10 focus:outline-none cursor-pointer"
+                      className="text-[9px] px-1.5 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-zinc-200 border border-white/10 focus:outline-none cursor-pointer"
                     >
                       <option value="reading">Reading</option>
                       <option value="plan_to_read">Plan</option>
@@ -227,7 +224,7 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                 <div className="p-3.5 flex-1 flex flex-col justify-between space-y-3">
                   <div>
                     <h3
-                      className="text-xs font-bold line-clamp-2 text-white light:text-zinc-900 group-hover:text-amber-400 transition-colors"
+                      className="text-xs font-bold line-clamp-2 text-zinc-900 dark:text-white group-hover:text-amber-500 transition-colors"
                       title={comic.title}
                     >
                       {comic.title}
@@ -238,7 +235,7 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                     {/* +1 Chapter Button */}
                     <button
                       onClick={() => handleIncrement(comic.id, comic.currentChapter)}
-                      className="w-full py-1.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className="w-full py-1.5 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>+1 Chapter</span>
@@ -250,13 +247,13 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                           href={comic.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 py-1 px-2 rounded-lg dark:bg-white/[0.04] light:bg-zinc-100 hover:bg-white/10 text-zinc-300 text-[11px] font-medium border dark:border-white/[0.05] light:border-zinc-200 transition-all flex items-center justify-center gap-1 text-center"
+                          className="flex-1 py-1 px-2 rounded-lg bg-zinc-100 dark:bg-white/[0.04] hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-700 dark:text-zinc-300 text-[11px] font-medium border border-zinc-200 dark:border-white/[0.05] transition-all flex items-center justify-center gap-1 text-center"
                         >
                           <ExternalLink className="w-3 h-3 text-zinc-400" />
                           <span>Baca</span>
                         </a>
                       ) : (
-                        <span className="flex-1 py-1 text-center text-[10px] text-zinc-500">
+                        <span className="flex-1 py-1 text-center text-[10px] text-zinc-400">
                           Tanpa link
                         </span>
                       )}
@@ -264,7 +261,7 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                       <button
                         onClick={() => handleDelete(comic.id)}
                         title="Hapus Komik"
-                        className="p-1 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        className="p-1 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -284,17 +281,17 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
             className="fixed inset-0 bg-black/70 backdrop-blur-md"
             onClick={() => setShowAddModal(false)}
           />
-          <div className="relative w-full max-w-sm aurora-glass rounded-2xl p-6 border dark:border-white/10 light:border-zinc-200 z-10 shadow-2xl">
-            <h3 className="text-sm font-bold text-white light:text-zinc-900 mb-1">
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#0e121b] rounded-2xl p-6 border border-zinc-200 dark:border-white/10 z-10 shadow-2xl">
+            <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
               Tambah Komik ke Daftar
             </h3>
-            <p className="text-xs text-zinc-400 mb-4">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
               Masukkan informasi judul dan link baca luar
             </p>
 
             <form onSubmit={handleAddComic} className="space-y-3">
               <div>
-                <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                   Judul Komik
                 </label>
                 <input
@@ -302,37 +299,37 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                   type="text"
                   required
                   placeholder="Contoh: Solo Leveling, Omniscient Reader"
-                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                   URL Cover Image (Opsional)
                 </label>
                 <input
                   name="coverUrl"
                   type="url"
                   placeholder="https://..."
-                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                   Link Halaman Baca (Opsional)
                 </label>
                 <input
                   name="sourceUrl"
                   type="url"
                   placeholder="https://kiryuu.id/..."
-                  className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                  <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                     Chapter Sekarang
                   </label>
                   <input
@@ -340,18 +337,18 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                     type="number"
                     step="0.5"
                     defaultValue="1"
-                    className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-medium text-zinc-300 light:text-zinc-700 mb-1 block">
+                  <label className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300 mb-1 block">
                     Status
                   </label>
                   <select
                     name="status"
                     defaultValue="reading"
-                    className="w-full glass-input px-3 py-2 rounded-xl text-xs focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500"
                   >
                     <option value="reading">Sedang Dibaca</option>
                     <option value="plan_to_read">Rencana Baca</option>
@@ -364,14 +361,14 @@ export function ComicsClient({ user, comicsList }: ComicsClientProps) {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-2 text-xs rounded-xl border dark:border-white/10 light:border-zinc-200 text-zinc-400 hover:text-white"
+                  className="flex-1 py-2 text-xs rounded-xl border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-2 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-md shadow-amber-500/20"
+                  className="flex-1 py-2 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-sm"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan Komik"}
                 </button>
