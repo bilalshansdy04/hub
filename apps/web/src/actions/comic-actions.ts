@@ -1,7 +1,6 @@
 "use server";
 
-import { db, comics } from "@shrimphub/database";
-import { eq, desc } from "drizzle-orm";
+import { db, comics, eq, desc } from "@shrimphub/database";
 import { revalidatePath } from "next/cache";
 
 export async function getComics() {

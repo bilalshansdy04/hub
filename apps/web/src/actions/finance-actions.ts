@@ -1,8 +1,7 @@
 "use server";
 
-import { db, transactions, wallets, categories } from "@shrimphub/database";
+import { db, transactions, wallets, categories, desc, eq } from "@shrimphub/database";
 import { parseQuickTransaction } from "@shrimphub/core-logic";
-import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function getFinanceOverview() {
@@ -41,14 +40,12 @@ export async function addQuickTransactionAction(rawText: string, targetWalletId?
   }
 
   try {
-    // Get default wallet or target
     let walletId = targetWalletId;
     if (!walletId) {
       const firstWallet = await db.select().from(wallets).limit(1);
       if (firstWallet.length > 0) {
         walletId = firstWallet[0].id;
       } else {
-        // Create initial default wallet if none exists
         walletId = "wallet-main";
         await db.insert(wallets).values({
           id: walletId,
@@ -73,7 +70,6 @@ export async function addQuickTransactionAction(rawText: string, targetWalletId?
       createdAt: new Date(),
     });
 
-    // Update wallet balance
     const wallet = await db.select().from(wallets).where(eq(wallets.id, walletId)).limit(1);
     if (wallet.length > 0) {
       const newBal =
