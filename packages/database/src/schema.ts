@@ -1,11 +1,19 @@
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
-// Users (Single user / admin profile)
+// Users (User profile)
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   pinCode: text("pin_code"),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+});
+
+// Sessions (Database-backed rolling session tokens with 7-day inactivity reset)
+export const sessions = sqliteTable("sessions", {
+  id: text("id").primaryKey(), // Secure random token
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 });
 
